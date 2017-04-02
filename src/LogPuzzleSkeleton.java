@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LogPuzzleSkeleton {
@@ -62,17 +63,25 @@ public class LogPuzzleSkeleton {
 			throws IOException {
 		//String line;
 		List<String> urls = new ArrayList<String>();
-        stream
+        urls = stream
 				.filter(line -> {
                                     Matcher match = urlPattern.matcher(line);
                                     boolean result = match.matches();
                                     if(result){
-                                        urls.add(match.group());
+                                        //urls.add(match.group());
                                         return result;
                                     }
                                     return false;
 				                })
-                .map({});
+                .map(s -> {
+					Matcher match = urlPattern.matcher(s);
+					boolean result = match.matches();
+					if(result){
+						return match.group();
+					}
+                	return null;
+				})
+				.collect(Collectors.toList());;
 		return urls;
 	}
 
@@ -91,7 +100,13 @@ public class LogPuzzleSkeleton {
         Collections.sort(urls, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                pattern.matcher(o1)
+                Matcher match01 = pattern.matcher(o1);
+                Matcher matche02 = pattern.matcher(o2);
+                boolean result01 = match01.matches();
+                boolean result02 = matche02.matches();
+                if(result01 && result02){
+                    return match01.group().compareTo(matche02.group());
+                }
                 return o1.compareTo(o2);
             }
         });
@@ -157,7 +172,7 @@ public class LogPuzzleSkeleton {
 	public static void main(String[] args) {
 		List<URL> urlsToDownload = read_urls("place_code.google.com");
 		//TODO: Compléter avec le chemin du dossier destination
-		downloadImages(urlsToDownload, );
+		downloadImages(urlsToDownload, "image");
 	}
 
 }
