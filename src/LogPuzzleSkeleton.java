@@ -51,9 +51,8 @@ public class LogPuzzleSkeleton {
 		String patern = "_(\\S*)";
 		Pattern urlPattern = Pattern.compile(patern);
 		Matcher match = urlPattern.matcher(filename);
-		boolean result = match.matches();
-		if (result){
-			return match.group();
+		if (match.find()){
+			return match.group(1);
 		}
 		throw new IllegalArgumentException("filename does not containe matching url patern");
 
@@ -66,18 +65,16 @@ public class LogPuzzleSkeleton {
         urls = stream
 				.filter(line -> {
                                     Matcher match = urlPattern.matcher(line);
-                                    boolean result = match.matches();
-                                    if(result){
+                                    if(match.find()){
                                         //urls.add(match.group());
-                                        return result;
+                                        return true;
                                     }
                                     return false;
 				                })
                 .map(s -> {
 					Matcher match = urlPattern.matcher(s);
-					boolean result = match.matches();
-					if(result){
-						return match.group();
+					if(match.find()){
+						return match.group(1);
 					}
                 	return null;
 				})
@@ -102,9 +99,7 @@ public class LogPuzzleSkeleton {
             public int compare(String o1, String o2) {
                 Matcher match01 = pattern.matcher(o1);
                 Matcher matche02 = pattern.matcher(o2);
-                boolean result01 = match01.matches();
-                boolean result02 = matche02.matches();
-                if(result01 && result02){
+                if(match01.find() && matche02.find()){
                     return match01.group().compareTo(matche02.group());
                 }
                 return o1.compareTo(o2);
@@ -142,7 +137,7 @@ public class LogPuzzleSkeleton {
 			for (URL url : imgUrls) {
 				i++;
 				String imgFileName = "img" + i + ".jpg";
-				htmlFile.print("<img src=\"" + imgFileName + "\">");
+				htmlFile.print("<img src=\"image" + imgFileName + "\">");
 				Path destinationPath = Paths.get(destDirName + imgFileName);
 				if (!destinationPath.toFile().exists())
 					Files.copy(url.openStream(), destinationPath,
